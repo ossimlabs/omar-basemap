@@ -1,6 +1,6 @@
 buildscript {
   ext {
-    baseImage = "rhel-minimal"
+    baseImage = "debian:stretch"
     grailsVersion = ""
     dockerFile=project.file("docker/Dockerfile")
     // must be a closure.  If set to =false then it thinks the proeprty does not exist
