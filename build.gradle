@@ -34,7 +34,7 @@ buildscript {
             && apt-get clean \
             && mkdir -p /usr/src/app """,
         "COPY / /usr/src/app",
-        "RUN cd /usr/src/app && npm install --production&&npm install -g tileserver-gl",
+        "RUN cd /usr/src/app && npm install --production && npm install -g tileserver-gl",
         "VOLUME /data",
         "WORKDIR /data",
         """ENV NODE_ENV="production" """,
