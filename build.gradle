@@ -1,0 +1,66 @@
+buildscript {
+  ext {
+    baseImage = "rhel-minimal"
+    grailsVersion = ""
+    dockerFile=project.file("docker/Dockerfile")
+    // must be a closure.  If set to =false then it thinks the proeprty does not exist
+    hasJar={false}
+
+    dockerStatementsOverride = {
+       [
+        "FROM debian:stretch",
+        "MAINTAINER Petr Sloup <petr.sloup@klokantech.com>",
+
+        """RUN apt-get -qq update \
+            && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+                apt-transport-https \
+                curl \
+                unzip \
+                build-essential \
+                python \
+                libcairo2-dev \
+                libgles2-mesa-dev \
+                libgbm-dev \
+                libllvm3.9 \
+                libprotobuf-dev \
+                libxxf86vm-dev \
+                xvfb \
+            && echo "deb https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list \
+            && echo "deb-src https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list \
+            && apt-get -qq update \
+            && DEBIAN_FRONTEND=noninteractive apt-get -y --allow-unauthenticated install \
+                nodejs \
+            && rm /etc/apt/sources.list.d/nodejs.list \
+            && apt-get clean \
+            && mkdir -p /usr/src/app """,
+        "COPY / /usr/src/app",
+        "RUN cd /usr/src/app && npm install --production",
+        "VOLUME /data",
+        "WORKDIR /data",
+        """ "ENV NODE_ENV="production" """,
+
+        "EXPOSE 80",
+        """ENTRYPOINT ["/usr/src/app/run.sh"] """
+       ]
+     }
+    if(System.env.OMAR_COMMON_PROPERTIES)
+    {
+      apply from: System.env.OMAR_COMMON_PROPERTIES
+    }
+  }
+  repositories {
+    mavenLocal()
+    maven { url "${ossimMavenProxy}" }
+  }
+  dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.0.6'
+        classpath 'com.github.skhatri:gradle-s3-plugin:1.0.4'
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
+  }
+}
+
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "maven-publish"
+apply plugin: "maven"
+
