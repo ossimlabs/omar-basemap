@@ -38,7 +38,7 @@ buildscript {
         "VOLUME /data",
         "WORKDIR /data",
         """ENV NODE_ENV="production" """,
-        """RUN useradd -u 1001 -r -g 0 -d $HOME -s /sbin/nologin -c 'Default Application User' omar && mkdir /usr/share/omar""",
+        """RUN useradd -u 1001 -r -g 0 -s /sbin/nologin -c 'Default Application User' omar && mkdir /usr/share/omar""",
         """USER 1001""",
         "EXPOSE 80",
         """ENTRYPOINT ["/usr/src/app/run.sh"] """
