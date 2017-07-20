@@ -5,4 +5,4 @@ sleep 1
 export DISPLAY=:99.0
 
 cd /data
-node /usr/src/app/ -p 8080 "$@"
+node /home/omar -p 8080 "$@"
