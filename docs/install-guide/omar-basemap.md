@@ -2,75 +2,103 @@
 
 ![](./Basemap_Mapproxy.png)
 
+## Running omar-basemap locally
+1) Clone the following repo: https://github.com/ossimlabs/omar-basemap/tree/master
+2) Download the necessary plugins and put them in a folder
+3) Add those plugins to a directory and make sure you add that directory to the build.gradle file
+4) Do a gradlew buildDockerImage which should generate a Dockerfile in the docker directory
+5) Do a docker build . in the directory of the Dockerfile
+6) Download an mbtiles file. An example of a file to download us by doing the following command:curl -o zurich_switzerland.mbtiles https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/zurich_switzerland.mbtiles
+7) You can run the tile server by either doing a) tileserver-gl zurich_switzerland.mbtiles or b) docker run -it -v /data -p 8080:80 klokantech/tileserver-gl
+
 ## Installation in Openshift
 
-Assumption: Mapproxy and omar-basemap are already pushed to the openshift server's internal docker registry.
+**Assumption:** The omar-basemap docker image is pushed into the OpenShift server's internal docker registry and available to the project.
 
-Configuring the basemap on “Open Shift” development and production environments.
-
-1) On the associated NFS server, you need to create a directory to store the mbtiles file (currently it is at /basemap-dev or basemap-rel)
+1) Create a PersistentVolume with enough space for the appropriate 'mbtiles' file. This file serves as the basemap layer of the world. The highest resolution set can be upwards of 40gb.
 2) Download the planet mbtiles file from here: https://openmaptiles.com/downloads/dataset/osm/#0.23/-0/0.
-3) Copy your .mbtiles file into the appropriate directory. (from step 1)
-4) Configure Openshift to create "persistent volume storage" and mount it to the directory from step 1
-5) Deploy the omar-basemap image into the appropriate project.The associated pod will deploy using port 80, and spin up and utilize the planet mbtiles file that was downloaded 
-6) On the NFS server, you need to create a directory to store the mapproxy.yml file, and the tile cache directory. (Currently it is at /basemap-cache-dev or /basemap-cache-rel)
-7) Create a new file in the directory created in step 6: touch mapproxy.yml
-8) Add the following to the mapproxy.yml file 
+3) Copy the downloaded tile file onto the PersistentVolume created in step 1.
+4) Create a PersistenVolumeClaim for the omar-basemap deployment
+5) Deploy the omar-basemap image into the appropriate project. The associated pod will deploy using *port 80*
+6) Attach the PersistenVolumeClaim created in step 3 to the deployment. Mount the claim to */data* in the basemap pod.
+
+### An Example DeploymentConfig
+
 ```yaml
-services:
-  demo:
-  tms:
-    use_grid_names: true
-    # origin for /tiles service
-    origin: 'nw'
-  kml:
-      use_grid_names: true
-  wmts:
-  wms:
-    md:
-      title: o2 Map Proxy
-      abstract: Provides a set of tiles for the o2 basemaps.
-
-
-layers:
-  - name: o2-basemap-basic
-    title: o2 Basic Basemap
-    sources: [o2_basic_tiles_cache]
-  - name: o2-basemap-bright
-    title: o2 Bright Basemap
-    sources: [o2_bright_tiles_cache]
-
-
-caches:
-  o2_basic_tiles_cache:
-    grids: [webmercator]
-    sources: [o2_basic_tiles]
-  o2_bright_tiles_cache:
-    grids: [webmercator]
-    sources: [o2_bright_tiles]
-
-
-sources:
-  o2_basic_tiles:
-     type: tile
-     url: http://omar-basemap:80/styles/klokantech-basic/%(z)s/%(x)s/%(y)s.png
-     grid: webmercator
-  o2_bright_tiles:
-    type: tile
-    url: http://omar-basemap:80/styles/osm-bright/%(z)s/%(x)s/%(y)s.png
-    grid: webmercator
-
-
-grids:
-    webmercator:
-        base: GLOBAL_WEBMERCATOR
-    geodetic:
-        base: GLOBAL_GEODETIC
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewApp
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: omar-openshift
+  name: omar-basemap
+spec:
+  replicas: 1
+  selector:
+    app: omar-openshift
+    deploymentconfig: omar-basemap
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        app: omar-openshift
+        deploymentconfig: omar-basemap
+    spec:
+      containers:
+      - image: 172.30.181.173:5000/o2/omar-basemap@sha256:0c353825fb23043b9a82674c07faff3ba3bf4e01b95d15f1ce6936b83ffbe98c
+        imagePullPolicy: Always
+        name: omar-basemap
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /data
+          name: volume-basemap
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: volume-basemap
+        persistentVolumeClaim:
+          claimName: basemap-dev-pvc
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - omar-basemap
+      from:
+        kind: ImageStreamTag
+        name: omar-basemap:latest
+        namespace: o2
+    type: ImageChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
 ```
-
-9) The important part of the mapproxy file is the sources > omar-basemap:80. This needs to be pointed at the omar-basemap pod you wish to proxy and cache on the mapproxy server. 
-10) Configure Openshift to create "persistent volume storage" and mount it to the directory from step 6.
-11) Deploy the omar-mapproxy image into the appropriate project. The associated pod will deploy using port 8080, and spin up and utilize the planet mbtiles file that was downloaded 
 
 ## Verification
 
@@ -80,7 +108,7 @@ This assumes that the omar-UI is deployed in openshift and is running.To verify 
 
 From openshift, if the basemap is not loading into the UI, the following steps would help you troubleshoot the issues.
 1) You should see a webpage that has a title of TileServer GL.
-2) You can also test the the TileServer by navigating to the route created in step 1. 
+2) You can also test the the TileServer by navigating to the route created in step 1.
 A test image from the server will be returned that looks like:
 ![](./test_image.png)
 3) To test the proxy you will need to copy/paste the following into the browser: http://mapproxy.omar-dev.ossim.io
@@ -136,12 +164,3 @@ You should see the following page if you click demo:
   </body>
 </html>
 ```
-
-## Running omar-basemap locally
-1) Clone the following repo: https://github.com/ossimlabs/omar-basemap/tree/master
-2) Download the necessary plugins and put them in a folder
-3) Add those plugins to a directory and make sure you add that directory to the build.gradle file
-4) Do a gradlew buildDockerImage which should generate a Dockerfile in the docker directory
-5) Do a docker build . in the directory of the Dockerfile
-6) Download an mbtiles file. An example of a file to download us by doing the following command:curl -o zurich_switzerland.mbtiles https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/zurich_switzerland.mbtiles
-7) You can run the tile server by either doing a) tileserver-gl zurich_switzerland.mbtiles or b) docker run -it -v /data -p 8080:80 klokantech/tileserver-gl
