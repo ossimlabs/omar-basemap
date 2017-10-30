@@ -22,6 +22,9 @@
 5) Deploy the omar-basemap image into the appropriate project. The associated pod will deploy using *port 80*
 6) Attach the PersistenVolumeClaim created in step 3 to the deployment. Mount the claim to */data* in the basemap pod.
 
+### Environment Variables
+* No environment variables are required
+
 ### An Example DeploymentConfig
 
 ```yaml
