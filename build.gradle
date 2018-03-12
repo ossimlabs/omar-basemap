@@ -48,8 +48,10 @@ buildscript {
     }
   }
   repositories {
-    mavenLocal()
     maven { url "${ossimMavenProxy}" }
+    if( Boolean.parseBoolean( System.env.WWW_CONNECTED ) ) {
+        mavenLocal()
+    }
   }
   dependencies {
         classpath 'com.bmuschko:gradle-docker-plugin:3.0.6'
