@@ -9,7 +9,7 @@ https://github.com/ossimlabs/omar-basemap
 1. Clone the following repo: https://github.com/ossimlabs/omar-basemap/tree/master
 2. Download the necessary plugins and put them in a folder
 3. Add those plugins to a directory and make sure you add that directory to the build.gradle file
-4. Do a gradlew buildDockerImage which should generate a Dockerfile in the docker directory
+4. Do a gradle buildDockerImage which should generate a Dockerfile in the docker directory
 5. Do a docker build . in the directory of the Dockerfile
 6. Download an mbtiles file. An example of a file to download us by doing the following command:curl -o zurich_switzerland.mbtiles https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/zurich_switzerland.mbtiles
 7. You can run the tile server by either doing a) tileserver-gl zurich_switzerland.mbtiles or b) docker run -it -v /data -p 8080:80 klokantech/tileserver-gl
