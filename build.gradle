@@ -24,6 +24,7 @@ buildscript {
     apt-get -y install libprotobuf-dev && \\
     apt-get -y install libxxf86vm-dev && \\
     apt-get -y install xvfb && \\
+    apt-get -y install lbnss-wrapper && \\
     echo "deb https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list && \\
     echo "deb-src https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list && \\
     apt-get -qq update && \\
