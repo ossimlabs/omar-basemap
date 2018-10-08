@@ -32,7 +32,7 @@ buildscript {
     rm /etc/apt/sources.list.d/nodejs.list && \\
     apt-get clean""",
         "COPY / /home/omar",
-        """RUN chown -R 1001:0 /home/omar && chmod -R g+w /home/omar && \\
+        """RUN chown -R 1001:0 /home/omar && chmod -R g+w /home/omar && chmod 777 /home/omar && \\
     rm -rf /data && \\
     cd /home/omar && \\
     npm install --production && \\
