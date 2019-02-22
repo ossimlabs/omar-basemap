@@ -51,7 +51,7 @@ buildscript {
   }
   repositories {
     mavenLocal()
-    maven { url "${ossimMavenProxy}" }
+    maven { url ossimMavenProxy }
   }
   dependencies {
         classpath 'com.bmuschko:gradle-docker-plugin:3.0.6'
