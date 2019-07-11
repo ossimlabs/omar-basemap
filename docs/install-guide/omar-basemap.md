@@ -1,7 +1,8 @@
 # OMAR Basemap
 
-## Source Location
-https://github.com/ossimlabs/omar-basemap
+## Purpose
+
+The OMAR Basemap service functions as an API provider to OpenStreetMap tiles that are served to the user through the OMAR-UI.
 
 ![](./Basemap_Mapproxy.png)
 
@@ -27,84 +28,6 @@ https://github.com/ossimlabs/omar-basemap
 
 ### Environment Variables
 * No environment variables are required
-
-### An Example DeploymentConfig
-
-```yaml
-apiVersion: v1
-kind: DeploymentConfig
-metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftNewApp
-  creationTimestamp: null
-  generation: 1
-  labels:
-    app: omar-openshift
-  name: omar-basemap
-spec:
-  replicas: 1
-  selector:
-    app: omar-openshift
-    deploymentconfig: omar-basemap
-  strategy:
-    activeDeadlineSeconds: 21600
-    resources: {}
-    rollingParams:
-      intervalSeconds: 1
-      maxSurge: 25%
-      maxUnavailable: 25%
-      timeoutSeconds: 600
-      updatePeriodSeconds: 1
-    type: Rolling
-  template:
-    metadata:
-      annotations:
-        openshift.io/generated-by: OpenShiftNewApp
-      creationTimestamp: null
-      labels:
-        app: omar-openshift
-        deploymentconfig: omar-basemap
-    spec:
-      containers:
-      - image: 172.30.181.173:5000/o2/omar-basemap@sha256:0c353825fb23043b9a82674c07faff3ba3bf4e01b95d15f1ce6936b83ffbe98c
-        imagePullPolicy: Always
-        name: omar-basemap
-        ports:
-        - containerPort: 80
-          protocol: TCP
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        volumeMounts:
-        - mountPath: /data
-          name: volume-basemap
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-      volumes:
-      - name: volume-basemap
-        persistentVolumeClaim:
-          claimName: basemap-dev-pvc
-  test: false
-  triggers:
-  - type: ConfigChange
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - omar-basemap
-      from:
-        kind: ImageStreamTag
-        name: omar-basemap:latest
-        namespace: o2
-    type: ImageChange
-status:
-  availableReplicas: 0
-  latestVersion: 0
-  observedGeneration: 0
-  replicas: 0
-  unavailableReplicas: 0
-  updatedReplicas: 0
-```
 
 ## Verification
 
