@@ -26,9 +26,7 @@ node(""){
         dir(omarCommonProjName) {
             git branch: "${OSSIM_GIT_BRANCH}", url: "${GIT_PUBLIC_SERVER_URL}/${omarCommonProjName}.git"
         }
-
-        // Set the environment variable for the gradle build
-        // env.OMAR_COMMON_PROPERTIES="${workspaceDir}/${omarCommonProjName}/omar-common-properties.gradle"
+        
     }
 
     stage("Download Artifacts"){
@@ -37,7 +35,7 @@ node(""){
              filter: "ossim-ci-${OSSIM_GIT_BRANCH}.tgz",
              flatten: true])
        sh "tar xvfz ossim-ci-${OSSIM_GIT_BRANCH}.tgz"
-       notifyObj = load "${env.WORKSPACE}/ossim-ci/jenkins/pipeline/notify.groovy"
+       notifyObj = load "${workspaceDir}/ossim-ci/jenkins/pipeline/notify.groovy"
     }
 
     try {
