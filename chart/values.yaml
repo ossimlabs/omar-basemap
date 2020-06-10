@@ -1,0 +1,79 @@
+# Default values for omar-wms.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+appName: omar-basemap
+
+global:
+  dockerRepository: nexus-docker-private-group.ossim.io
+  imagePullSecret:
+    registry: null
+    username: null
+    password: null
+
+  createImagePullSecret: true
+  useImagePullSecret: true
+  createHpa: true
+  createPVs: true
+
+  volumes:
+    basemapData:
+      type: null
+      nfsServer: null
+      nfsMountPoint: null
+      accessModes:
+        - ReadOnlyOnce
+      size: 1
+
+volumes:
+  basemapData: null
+
+# These variables can be overridden because of the use of the 'pluck' function:
+# - createImagePullSecret
+# - createHpa
+# - createPVs
+
+livenessProbe:
+  failureThreshold: 5
+  initialDelaySeconds: 60
+  periodSeconds: 15
+  successThreshold: 1
+  timeoutSeconds: 380
+
+readinessProbe:
+  failureThreshold: 15
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  successThreshold: 1
+  timeoutSeconds: 3
+  path: /
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 1000Mi
+  requests:
+    cpu: 500m
+    memory: 500Mi
+
+minReplicas: 1
+maxReplicas: 10
+targetCpu: 50
+
+image:
+  name: omar-basemap
+  tag: dev
+  pullPolicy: Always
+
+internalPort: 8080
+externalPort: 8080
+
+terminationGracePeriodSeconds: 30
+
+envVars:
+  SPRING_CLOUD_CONFIG_LABEL: master
+  JAVA_OPTS: "-server -Xms256m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit -Djava.awt.headless=true -XshowSettings:vm -Djava.security.egd=file:/dev/./urandom"
+
+ossimDataLocalMountPath: /data
