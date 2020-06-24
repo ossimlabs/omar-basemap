@@ -13,10 +13,16 @@ spec:
       labels:
         app: {{ .Values.appName }}
     spec:
+      initContainers:
+      {{- if (pluck "useSpringConfigServer" .Values .Values.global | first) }}
+      - name: wait-for-config-server
+        image: busybox:1.28
+        command: ['sh', '-c', "until wget omar-config-server:8888/omar-config-server/omar-basemap.yml; do echo waiting for config server; sleep 2; done"]
+      {{- end }}
       containers:
       - name:  {{ .Values.appName }}
         env:
-        {{- include "omar-basemap.envVars" . | nindent 8 }}
+        {{- include "omar-basemap.envVars" . | indent 8 }}
         image: "{{ .Values.global.dockerRepository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
@@ -49,8 +55,7 @@ spec:
             memory: {{ .Values.resources.requests.memory }}
         terminationMessagePath: /dev/termination-log
         volumeMounts:
-        - mountPath: {{ .Values.ossimDataLocalMountPath }}
-          name: basemap-data
+        {{- include "omar-basemap.volumeMounts" . | indent 8 }}
       dnsPolicy: ClusterFirst
       {{- if .Values.global.useImagePullSecret }}
       imagePullSecrets:
@@ -60,6 +65,4 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
-      - name: basemap-data
-        persistentVolumeClaim:
-          claimName: {{ .Values.appName }}-basemap-data-pvc
+      {{- include "omar-basemap.volumes" . | indent 6 }}
