@@ -58,7 +58,26 @@ podTemplate(
       }
       load "common-variables.groovy"
     }
+      
+    stage('Docker build') {
+      container('docker') {
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {
+          sh """
+            docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:${BRANCH_NAME} ./docker
+          """
+        }
+      }
+    }
 
+    stage('Docker push'){
+      container('docker') {
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
+        sh """
+            docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:${BRANCH_NAME}
+        """
+        }
+      }
+    }
     stage('Package chart'){
       container('helm') {
         sh """
