@@ -37,7 +37,6 @@ buildscript {
     cd /home/omar && \\
     npm install --production && \\
     npm install -g tileserver-gl""",
-    "ADD https://raw.githubusercontent.com/openmaptiles/maptiler-basic-gl-style/master/style.json /home/omar/node_modules/tileserver-gl-styles/styles/o2-roads/style.json",
         "WORKDIR /data",
         """ENV NODE_ENV="production" """,
         "USER 1001",
