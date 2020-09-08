@@ -56,7 +56,7 @@ podTemplate(
         preVERSION = readFile "buildVersion.txt"
         VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
 
-        GIT_TAG_NAME = "omar-basemap" + "-" + VERSION //webhook stuff
+        GIT_TAG_NAME = "omar-basemap" + "-" + VERSION
         ARTIFACT_NAME = "ArtifactName"
 
         script {
