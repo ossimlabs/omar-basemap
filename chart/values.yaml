@@ -19,7 +19,7 @@ global:
   createPVs: true
 
   volumes:
-    basemapData:
+    basemap-data:
       type: null
       nfsServer: null
       nfsMountPoint: null
@@ -27,8 +27,8 @@ global:
         - ReadOnlyOnce
       size: 1
 
-volumes:
-  basemapData: null
+volumeNames:
+  - basemap-data
 
 # These variables can be overridden because of the use of the 'pluck' function:
 # - createImagePullSecret
