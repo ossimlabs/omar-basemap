@@ -133,10 +133,7 @@ podTemplate(
                     sh "kubectl rollout restart deployment/omar-basemap"   
                 }
                 else {
-                    //sh "echo Not deploying ${BRANCH_NAME} branch"
-                    sh "aws eks --region us-east-1 update-kubeconfig --name gsp-dev-v2 --alias dev"
-                    sh "kubectl config set-context dev --namespace=omar-dev"
-                    sh "kubectl rollout restart deployment/omar-basemap"  
+                    sh "echo Not deploying ${BRANCH_NAME} branch" 
                 }
             }
         }
