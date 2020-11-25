@@ -116,8 +116,8 @@ section{
   padding: 0;
   overflow: hidden;
   border-radius:4px;
-  background-color: #499DCE;
   background: linear-gradient(90deg, #5aaad8, #4a9ecf);
+  background-color: #499DCE;
   color: #fff;
   text-decoration: none;
   font-weight: bold;
