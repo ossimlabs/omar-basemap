@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicas: 1
-
 appName: omar-basemap
 
 global:
@@ -20,7 +18,7 @@ global:
 
   volumes:
     basemap-data:
-      type: null
+      type: ""
       nfsServer: null
       nfsMountPoint: null
       accessModes:
@@ -77,3 +75,13 @@ envVars:
   JAVA_OPTS: "-server -Xms256m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit -Djava.awt.headless=true -XshowSettings:vm -Djava.security.egd=file:/dev/./urandom"
 
 ossimDataLocalMountPath: /data
+
+configmaps: {}
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraInitContainers: []
+
+sideCars: []
