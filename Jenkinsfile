@@ -96,49 +96,6 @@ podTemplate(
 
       DOCKER_IMAGE_PATH = "${DOCKER_REGISTRY_PRIVATE_UPLOAD_URL}/omar-basemap"
     }
-
-stage('Docker build') {
-      container('docker') {
-        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
-          if (BRANCH_NAME == 'master'){
-                sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}" ./docker
-                """
-          }
-          else {
-                sh """
-                    docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}".a ./docker
-                """
-          }
-        }
-      }
-    }
-
-    stage('Docker push'){
-        container('docker') {
-          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
-            if (BRANCH_NAME == 'master'){
-                sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}"
-                """
-            }
-            else if (BRANCH_NAME == 'dev') {
-                sh """
-                    docker tag "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}".a "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:dev
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}".a
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:dev
-                """
-            }
-            else {
-                sh """
-                    docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-basemap:"${VERSION}".a
-                """
-            }
-          }
-        }
-      }
-
-
         
     stage('Package chart'){
       container('helm') {
