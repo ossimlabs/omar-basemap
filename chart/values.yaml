@@ -78,10 +78,6 @@ ossimDataLocalMountPath: /data
 
 configmaps: {}
 
-extraVolumes: []
-
-extraVolumeMounts: []
-
 extraInitContainers: []
 
 sideCars: []
