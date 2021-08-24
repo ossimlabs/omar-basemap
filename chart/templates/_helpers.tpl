@@ -40,12 +40,6 @@
 {{- define "omar-basemap.volumeMounts" -}}
 {{- include "omar-basemap.volumeMounts.configmaps" . -}}
 {{- include "omar-basemap.volumeMounts.pvcs" . -}}
-{{- if .Values.global.extraVolumeMounts }}
-{{ toYaml .Values.global.extraVolumeMounts }}
-{{- end }}
-{{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts }}
-{{- end }}
 {{- end -}}
 
 
