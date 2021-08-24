@@ -68,10 +68,4 @@
 {{- define "omar-basemap.volumes" -}}
 {{- include "omar-basemap.volumes.configmaps" . -}}
 {{- include "omar-basemap.volumes.pvcs" . -}}
-{{- if .Values.global.extraVolumes }}
-{{ toYaml .Values.global.extraVolumes }}
-{{- end }}
-{{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes }}
-{{- end }}
 {{- end -}}
