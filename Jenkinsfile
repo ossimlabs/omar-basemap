@@ -67,7 +67,14 @@ node(POD_LABEL){
         MASTER = "master"
         GIT_BRANCH_NAME = scmVars.GIT_BRANCH
         BRANCH_NAME = """${sh(returnStdout: true, script: "echo ${GIT_BRANCH_NAME} | awk -F'/' '{print \$2}'").trim()}"""
-        VERSION = """${sh(returnStdout: true, script: "cat chart/Chart.yaml | grep version: | awk -F'version:' '{print \$2}'").trim()}"""
+        sh """
+        echo "${GIT_BRANCH_NAME}"
+        echo "${BRANCH_NAME}"
+        touch buildVersion.txt
+        grep buildVersion gradle.properties | cut -d "=" -f2 > "buildVersion.txt"
+        """
+        preVERSION = readFile "buildVersion.txt"
+        VERSION = preVERSION.substring(0, preVERSION.indexOf('\n'))
         GIT_TAG_NAME = APP_NAME + "-" + VERSION
         ARTIFACT_NAME = "ArtifactName"
 
