@@ -13,8 +13,10 @@ global:
 
   createImagePullSecret: true
   useImagePullSecret: true
-  createHpa: true
   createPVs: true
+
+  autoscaling:
+    enabled: true
 
   volumes:
     basemap-data:
@@ -56,9 +58,11 @@ resources:
     cpu: 500m
     memory: 500Mi
 
-minReplicas: 1
-maxReplicas: 10
-targetCpu: 50
+autoscaling:
+  enabled:
+  minReplicas: 1
+  maxReplicas: 10
+  targetCpu: 50
 
 image:
   name: omar-basemap
