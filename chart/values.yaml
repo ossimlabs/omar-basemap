@@ -61,13 +61,13 @@ resources:
 autoscaling:
   enabled:
   minReplicas: 1
-  maxReplicas: 10
-  targetCpu: 50
+  maxReplicas: 1
+  # targetCpu: 50
 
 image:
   name: omar-basemap
   tag: dev
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 internalPort: 8080
 externalPort: 8080
