@@ -24,6 +24,9 @@ global:
         - ReadOnlyOnce
       size: 1
 
+  deployment:
+    annotations: {}
+
 volumeNames:
   - basemap-data
 
@@ -76,3 +79,6 @@ configmaps: {}
 extraInitContainers: []
 
 sideCars: []
+
+deployment:
+  annotations: {}
