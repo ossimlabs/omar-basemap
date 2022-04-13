@@ -40,6 +40,8 @@ volumeNames:
 # - createHpa
 # - createPVs
 
+replicas: 1
+
 livenessProbe:
   failureThreshold: 5
   initialDelaySeconds: 60

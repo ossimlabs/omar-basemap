@@ -9,9 +9,7 @@ metadata:
     {{- $key | nindent 4 }}: {{ tpl $value $ | quote }}
   {{- end }}
 spec:
-  {{- if eq (include "omar-basemap.autoscaling.enabled" $) "false" }}
   replicas: {{ .Values.replicas }}
-  {{- end }}
   selector:
     matchLabels:
       app: {{ .Values.fullnameOverride }}
