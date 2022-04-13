@@ -29,7 +29,16 @@ Return the proper image name
 {{- end -}}
 {{- end -}}
 
-
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "omar-basemap.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default .Values.appName .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
 
 {{/* Templates for the volumeMounts section */}}
 
