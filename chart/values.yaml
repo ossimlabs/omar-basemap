@@ -32,6 +32,8 @@ global:
     annotations: {}
     # name:
 
+  envVars: {}
+
 volumeNames:
   - basemap-data
 
