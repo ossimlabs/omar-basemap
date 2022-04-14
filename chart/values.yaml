@@ -69,7 +69,7 @@ resources:
 
 image:
   name: omar-basemap
-  tag: dev
+  tag: 1.1.4
   pullPolicy: IfNotPresent
 
 internalPort: 8080
