@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-appName: omar-basemap
+fullnameOverride: omar-basemap
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
@@ -13,7 +13,6 @@ global:
 
   createImagePullSecret: true
   useImagePullSecret: true
-  createHpa: true
   createPVs: true
 
   volumes:
@@ -25,6 +24,16 @@ global:
         - ReadOnlyOnce
       size: 1
 
+  deployment:
+    annotations: {}
+
+  serviceAccount:
+    enabled: false
+    annotations: {}
+    # name:
+
+  envVars: {}
+
 volumeNames:
   - basemap-data
 
@@ -32,6 +41,8 @@ volumeNames:
 # - createImagePullSecret
 # - createHpa
 # - createPVs
+
+replicas: 1
 
 livenessProbe:
   failureThreshold: 5
@@ -56,14 +67,10 @@ resources:
     cpu: 500m
     memory: 500Mi
 
-minReplicas: 1
-maxReplicas: 10
-targetCpu: 50
-
 image:
   name: omar-basemap
-  tag: dev
-  pullPolicy: Always
+  tag: 1.1.4
+  pullPolicy: IfNotPresent
 
 internalPort: 8080
 externalPort: 8080
@@ -81,3 +88,15 @@ configmaps: {}
 extraInitContainers: []
 
 sideCars: []
+
+deployment:
+  annotations: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  enabled: null
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and enabled is true, a name is generated using the fullname template
+  # name:
