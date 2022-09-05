@@ -6,10 +6,8 @@ fullnameOverride: omar-basemap
 
 global:
   dockerRepository: nexus-docker-private-group.ossim.io
-  imagePullSecret:
-    registry: null
-    username: null
-    password: null
+  image:
+    pullSecrets: []
 
   createImagePullSecret: true
   useImagePullSecret: true

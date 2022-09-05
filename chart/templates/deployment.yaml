@@ -66,15 +66,12 @@ spec:
             memory: {{ .Values.resources.requests.memory }}
         terminationMessagePath: /dev/termination-log
         volumeMounts:
-        {{- include "omar-basemap.volumeMounts" . | indent 8 }}
+          {{- include "omar-basemap.volumeMounts" . | nindent 12 }}
       dnsPolicy: ClusterFirst
-      {{- if .Values.global.useImagePullSecret }}
-      imagePullSecrets:
-        - name: {{ .Values.fullnameOverride }}-pull-secret
-      {{- end }}
+      {{- include "omar-basemap.imagePullSecrets" . | indent 6 }}
       restartPolicy: Always
       securityContext: {}
       serviceAccountName: {{ include "omar-basemap.serviceAccount.name" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
-      {{- include "omar-basemap.volumes" . | indent 6 }}
+        {{- include "omar-basemap.volumes" . | nindent 8 }}
