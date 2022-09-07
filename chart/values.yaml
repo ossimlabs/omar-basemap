@@ -9,7 +9,6 @@ global:
   image:
     pullSecrets: []
 
-  createImagePullSecret: true
   useImagePullSecret: true
   createPVs: true
 
