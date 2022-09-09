@@ -9,7 +9,7 @@ global:
   image:
     pullSecrets: []
 
-  useImagePullSecret: true
+  
   createPVs: true
 
   volumes:
