@@ -5,11 +5,12 @@
 fullnameOverride: omar-basemap
 
 global:
-  dockerRepository: nexus-docker-private-group.ossim.io
+
   image:
+    registry: ""
+    pullPolicy: ""
     pullSecrets: []
 
-  
   createPVs: true
 
   volumes:
@@ -30,6 +31,9 @@ global:
     # name:
 
   envVars: {}
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 volumeNames:
   - basemap-data
@@ -88,6 +92,10 @@ sideCars: []
 
 deployment:
   annotations: {}
+
+nodeSelector: {}
+affinity: {}
+tolerations: []
 
 serviceAccount:
   # Specifies whether a service account should be created
