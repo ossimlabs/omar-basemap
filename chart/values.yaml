@@ -10,6 +10,11 @@ global:
     registry: ""
     pullPolicy: ""
     pullSecrets: []
+    
+  busybox:
+    image:
+      repository: busybox
+      tag: "1.28"
 
   createPVs: true
 
@@ -73,6 +78,11 @@ image:
   name: omar-basemap
   tag: 1.1.4
   pullPolicy: IfNotPresent
+
+busybox:
+  image: {}
+    # repository:
+    # tag:
 
 internalPort: 8080
 externalPort: 8080
