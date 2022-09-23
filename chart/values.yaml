@@ -10,7 +10,7 @@ global:
     registry: ""
     pullPolicy: ""
     pullSecrets: []
-    
+
   busybox:
     image:
       repository: busybox
@@ -77,7 +77,7 @@ resources:
 image:
   name: omar-basemap
   tag: 1.1.4
-  pullPolicy: IfNotPresent
+  pullPolicy: ""
 
 busybox:
   image: {}
