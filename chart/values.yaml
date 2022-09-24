@@ -5,14 +5,17 @@
 fullnameOverride: omar-basemap
 
 global:
-  dockerRepository: nexus-docker-private-group.ossim.io
-  imagePullSecret:
-    registry: null
-    username: null
-    password: null
 
-  createImagePullSecret: true
-  useImagePullSecret: true
+  image:
+    registry: ""
+    pullPolicy: ""
+    pullSecrets: []
+
+  busybox:
+    image:
+      repository: busybox
+      tag: "1.28"
+
   createPVs: true
 
   volumes:
@@ -33,6 +36,10 @@ global:
     # name:
 
   envVars: {}
+  envFrom: []
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
 
 volumeNames:
   - basemap-data
@@ -70,7 +77,12 @@ resources:
 image:
   name: omar-basemap
   tag: 1.1.4
-  pullPolicy: IfNotPresent
+  pullPolicy: ""
+
+busybox:
+  image: {}
+    # repository:
+    # tag:
 
 internalPort: 8080
 externalPort: 8080
@@ -91,6 +103,11 @@ sideCars: []
 
 deployment:
   annotations: {}
+
+envFrom: []
+nodeSelector: {}
+affinity: {}
+tolerations: []
 
 serviceAccount:
   # Specifies whether a service account should be created
