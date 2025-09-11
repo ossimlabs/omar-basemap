@@ -1,21 +1,28 @@
 process.env.NODE_ENV = 'test';
 
-global.should = require('should');
-global.supertest = require('supertest');
+import { expect } from 'chai';
+import supertest from 'supertest';
+import { server } from '../src/server.js';
 
-before(function() {
+global.expect = expect;
+global.supertest = supertest;
+
+before(async function () {
   console.log('global setup');
   process.chdir('test_data');
-  var running = require('../src/server')({
+  const running = await server({
     configPath: 'config.json',
-    port: 8888
+    port: 8888,
+    publicUrl: '/test/',
   });
   global.app = running.app;
   global.server = running.server;
   return running.startupPromise;
 });
 
-after(function() {
+after(function () {
   console.log('global teardown');
-  global.server.close(function() { console.log('Done'); });
+  global.server.close(function () {
+    console.log('Done');
+  });
 });
